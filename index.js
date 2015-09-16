@@ -2,7 +2,7 @@
  * Module dependencies.
  */
 
-var encode = require('base64-encode');
+var base64encode = require('base64-encode');
 var cors = require('has-cors');
 var jsonp = require('jsonp');
 var JSON = require('json');
@@ -84,9 +84,8 @@ function json(url, obj, headers, fn){
 function base64(url, obj, _, fn){
   if (3 == arguments.length) fn = _;
   var prefix = exports.prefix;
-  obj = encode(JSON.stringify(obj));
-  obj = encodeURIComponent(obj);
-  url += '?' + prefix + '=' + obj;
+  var data = encode(obj);
+  url += '?' + prefix + '=' + data;
   jsonp(url, { param: exports.callback }, function(err, obj){
     if (err) return fn(err);
     fn(null, {
@@ -94,4 +93,18 @@ function base64(url, obj, _, fn){
       body: obj
     });
   });
+}
+
+/**
+ * Encodes `obj`.
+ *
+ * @param {Object} obj
+ */
+
+function encode(obj) {
+  var str = '';
+  str = JSON.stringify(obj);
+  str = base64encode(str);
+  str = str.replace(/\+/g, '-').replace(/\//g, '_');
+  return encodeURIComponent(str);
 }

@@ -6,7 +6,7 @@
 ## Installation
 
 ```bash
-$ component install yields/send-json
+$ component install segmentio/send-json
 ```
 
 ## API
