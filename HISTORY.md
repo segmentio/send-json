@@ -1,3 +1,8 @@
+3.0.0 / 2016-06-16
+==================
+
+ * Modernize test harness; remove Duo support, add Browserify support
+
 2.0.0 / 2015-09-15
 ==================
 
