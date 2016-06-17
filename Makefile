@@ -1,40 +1,80 @@
+##
+# Binaries
+##
 
-BROWSERS="ie6..11"
-BINS=node_modules/.bin
-URL=http://localhost:3000/test
-P=$(BINS)/mocha-phantom
-DUO=$(BINS)/duo
-S=$(BINS)/serve
-G=$(BINS)/gravy
+ESLINT := node_modules/.bin/eslint
+KARMA := node_modules/.bin/karma
 
-build: node_modules index.js test/test.js
-	@$(DUO) test/test.js build/build.js --development
+##
+# Files
+##
 
-test: server build
-	@open $(URL)
+LIBS = $(shell find lib -type f -name "*.js")
+TESTS = $(shell find test -type f -name "*.test.js")
+SUPPORT = $(wildcard karma.conf*.js)
+ALL_FILES = $(LIBS) $(TESTS) $(SUPPORT)
 
-test-phantom: server build
-	@$(P) $(URL)
+##
+# Program options/flags
+##
 
-test-sauce: server build
-	@BROWSERS=$(BROWSERS) $(G) \
-		--url $(URL)
+# A list of options to pass to Karma
+# Overriding this overwrites all options specified in this file (e.g. BROWSERS)
+KARMA_FLAGS ?=
 
-node_modules: package.json
+# A list of Karma browser launchers to run
+# http://karma-runner.github.io/0.13/config/browsers.html
+BROWSERS ?=
+ifdef BROWSERS
+KARMA_FLAGS += --browsers $(BROWSERS)
+endif
+
+ifdef CI
+KARMA_CONF ?= karma.conf.ci.js
+else
+KARMA_CONF ?= karma.conf.js
+endif
+
+# Mocha flags.
+GREP ?= .
+
+##
+# Tasks
+##
+
+# Install node modules.
+node_modules: package.json $(wildcard node_modules/*/package.json)
 	@npm install
+	@touch $@
 
-server: kill
-	@$(S) . &> /dev/null & echo $$! > test/pid
-	@node test/server &> /dev/null & echo $$! > test/server-pid
-	@sleep 1
+# Install dependencies.
+install: node_modules
 
-kill:
-	@-test -e test/pid && kill `cat test/pid`
-	@-test -e test/server-pid && kill `cat test/server-pid`
-	@rm -f test/pid test/server-pid
+# Remove temporary files and build artifacts.
+clean:
+	rm -rf *.log coverage
+.PHONY: clean
 
-clean: kill
-	rm -rf components build
+# Remove temporary files, build artifacts, and vendor dependencies.
+distclean: clean
+	rm -rf node_modules
+.PHONY: distclean
 
-.PHONY: clean test test-phantom test-sauce
+# Lint JavaScript source files.
+lint: install
+	@$(ESLINT) $(ALL_FILES)
+.PHONY: lint
 
+# Attempt to fix linting errors.
+fmt: install
+	@$(ESLINT) --fix $(ALL_FILES)
+.PHONY: fmt
+
+# Run browser unit tests in a browser.
+test-browser: install
+	@$(KARMA) start $(KARMA_FLAGS) $(KARMA_CONF)
+
+# Default test target.
+test: lint test-browser
+.PHONY: test
+.DEFAULT_GOAL = test
