@@ -22,6 +22,8 @@ module.exports = function(config) {
               if (request.url === '/base/data' && request.method === 'POST') {
                 var body = '';
 
+                response.setHeader('Access-Control-Allow-Origin', '*');
+
                 request.on('data', function(data) {
                   body += data;
                 });
