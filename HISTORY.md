@@ -1,3 +1,10 @@
+
+4.0.0 / 2018-04-16
+==================
+
+ * json: Add timeout support.
+ * json: Remove optional arguments. All arguments (including timeout) are now required.
+
 3.0.0 / 2016-06-16
 ==================
 
