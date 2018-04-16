@@ -1,4 +1,9 @@
 
+4.0.1 / 2018-04-16
+==================
+
+ * base64: Fix signature so that it can be used interchangeably with `json` method.
+
 4.0.0 / 2018-04-16
 ==================
 
