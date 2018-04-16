@@ -44,7 +44,7 @@ describe('send-json', function() {
 
       var url = protocol + '//www.reddit.com/r/pics.json';
       send.callback = 'jsonp';
-      send.base64(url, [1, 2, 3], {}, function(err, req) {
+      send.base64(url, [1, 2, 3], {}, null, function(err, req) {
         if (err) return done(new Error(err.message));
         var data = req.url.split('data=')[1];
         data = decodeURIComponent(data);
