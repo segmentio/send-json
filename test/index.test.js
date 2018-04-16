@@ -56,5 +56,23 @@ describe('send-json', function() {
         done();
       });
     });
+
+    it('should work with timeout', function(done) {
+      if (send.type !== 'jsonp') return done();
+
+      var url = protocol + '//www.reddit.com/r/pics.json';
+      send.callback = 'jsonp';
+      send.base64(url, [1, 2, 3], {}, 10 * 1000, function(err, req) {
+        if (err) return done(new Error(err.message));
+        var data = req.url.split('data=')[1];
+        data = decodeURIComponent(data);
+        data = json.parse(decode(data));
+        assert(data[0] === 1);
+        assert(data[1] === 2);
+        assert(data[2] === 3);
+        assert(req.body.kind === 'Listing');
+        done();
+      });
+    });
   });
 });
