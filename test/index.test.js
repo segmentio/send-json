@@ -17,7 +17,7 @@ describe('send-json', function() {
       if (send.type !== 'xhr') return done();
 
       var headers = { 'Content-Type': 'application/json' };
-      send.json(url, [1, 2, 3], headers, 0, function(err, req) {
+      send.json(url, [1, 2, 3], headers, null, function(err, req) {
         if (err) return done(new Error(err.message));
         var res = json.parse(req.responseText);
         assert(res === true);
