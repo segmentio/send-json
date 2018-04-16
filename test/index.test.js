@@ -17,7 +17,19 @@ describe('send-json', function() {
       if (send.type !== 'xhr') return done();
 
       var headers = { 'Content-Type': 'application/json' };
-      send.json(url, [1, 2, 3], headers, function(err, req) {
+      send.json(url, [1, 2, 3], headers, 0, function(err, req) {
+        if (err) return done(new Error(err.message));
+        var res = json.parse(req.responseText);
+        assert(res === true);
+        done();
+      });
+    });
+
+    it('should work with timeout', function(done) {
+      if (send.type !== 'xhr') return done();
+
+      var headers = { 'Content-Type': 'application/json' };
+      send.json(url, [1, 2, 3], headers, 10 * 1000, function(err, req) {
         if (err) return done(new Error(err.message));
         var res = json.parse(req.responseText);
         assert(res === true);
