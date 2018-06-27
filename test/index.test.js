@@ -1,6 +1,7 @@
 'use strict';
 
 var assert = require('proclaim');
+var sinon = require('sinon');
 var decode = require('base64-decode');
 var json = require('json3');
 var send = require('../lib');
@@ -35,6 +36,23 @@ describe('send-json', function() {
         assert(res === true);
         done();
       });
+    });
+
+    it('should not stringify buffers', function(done) {
+      /* global ArrayBuffer, Uint8Array */
+      if (typeof ArrayBuffer === 'undefined') return done();
+
+      var xhr = sinon.useFakeXMLHttpRequest();
+      var data = new Uint8Array([0xde, 0xad, 0xbe, 0xef]);
+
+      xhr.onCreate = function(req) {
+        req.send = function(payload) {
+          assert(payload === data);
+          done();
+        };
+      };
+
+      send.json(url, data, {});
     });
   });
 
