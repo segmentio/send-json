@@ -1,6 +1,6 @@
 {
   "name": "@segment/send-json",
-  "version": "4.0.1",
+  "version": "4.0.2",
   "description": "send json across all browsers",
   "keywords": [
     "json",
@@ -22,12 +22,11 @@
   "homepage": "https://github.com/segmentio/send-json#readme",
   "dependencies": {
     "@segment/base64-encode": "^2.0.2",
-    "eslint-plugin-react": "^7.10.0",
     "has-cors": "^1.1.0",
-    "json3": "^3.3.2",
     "jsonp": "^0.2.0"
   },
   "devDependencies": {
+    "eslint-plugin-react": "^7.10.0",
     "@segment/eslint-config": "^4.0.0",
     "base64-decode": "^1.0.2",
     "browserify": "^13.0.0",
